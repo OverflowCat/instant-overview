@@ -1,4 +1,4 @@
-export function filterContent(dom: HTMLElement): HTMLElement {
+export function filterContent(dom: HTMLElement, document: Document): HTMLElement {
   function changeTagName(ele: HTMLElement | Element, newTagName: string): void {
     var parent = ele.parentNode;
     var newElement = document.createElement(newTagName);
@@ -11,7 +11,8 @@ export function filterContent(dom: HTMLElement): HTMLElement {
   dom.innerHTML = dom.innerHTML
     .replace(/(<br( *\/? *|\s[^<>]*)>\s*)+/gim, "\n")
     .replace(/\n+/g, "\n");
-  // replace multiple br tags with one line break, telegraph will convert it to <br class="inline">
+  /* replace multiple br tags with one line break, and 
+  Telegraph will convert it to <br class="inline">. */
 
   // sr-annote
   const annotations = dom.querySelectorAll("sr-annote");
@@ -22,7 +23,7 @@ export function filterContent(dom: HTMLElement): HTMLElement {
   bqs.forEach((x) => changeTagName(x, "BLOCKQUOTE"));
 
   // headlines: Telegraph allows h3, h4 only
-  document.querySelectorAll("h4,h5,h6").forEach((x) => {
+  dom.querySelectorAll("h4,h5,h6").forEach((x) => {
     x.innerHTML = `<b>${x.innerHTML}</b>`;
     changeTagName(x, "P");
   });
