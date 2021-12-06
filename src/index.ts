@@ -1,4 +1,4 @@
-import * as MediaUploader from './media';
+//import * as MediaUploader from './media';
 
 // import restify
 import * as restify from 'restify';
@@ -11,5 +11,3 @@ server.get('/', (req: restify.Request, res: restify.Response, next: restify.Next
   });
   return next();
 });
-
-

@@ -4,7 +4,7 @@
   "description": "Yet another API for converting HTML to Instant View articles.",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node src/uploader.js"
   },
   "keywords": [
     "Telegram"

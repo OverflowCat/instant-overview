@@ -1,10 +1,4 @@
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const html: String = ``
-const dom = new JSDOM(html)
-const doc = dom.window.document.body;
-
-function domToNode(domNode: Element) {
+export function domToNode(domNode: HTMLElement) {
   if (domNode.nodeType == domNode.TEXT_NODE) {
     return domNode.textContent;
     //return domNode.data;
@@ -22,12 +16,12 @@ function domToNode(domNode: Element) {
   if (domNode.childNodes.length > 0) {
     nodeElement.children = [];
     for (let i = 0; i < domNode.childNodes.length; i++)
-      nodeElement.children.push(domToNode(<Element>domNode.childNodes[i]));
+      nodeElement.children.push(domToNode(<HTMLElement>domNode.childNodes[i]));
   }
   return nodeElement;
 }
 
-function nodeToDom(node: any) {
+export function nodeToDom(node: any) {
   if (typeof node === 'string' || node instanceof String) 
     return document.createTextNode(node.toString());
   if (node.tag) {
@@ -45,6 +39,3 @@ function nodeToDom(node: any) {
   }
   return domNode;
 }
-
-console.log(domToNode(doc));
-console.log(JSON.stringify(domToNode(doc)));

@@ -14,7 +14,9 @@ results
 tmp
 
 # Build
-src/parser.js
+src/domparser.js
+src/uploader.js
+src/filter.js
 src/index.js
 src/sr-read-content.html
 
