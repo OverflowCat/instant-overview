@@ -1,7 +1,10 @@
 import { domToNode, nodeToDom } from "./domparser";
 import fs from "fs";
 import { filterContent } from "./filter";
-import fetch from "cross-fetch";
+//import fetch from "cross-fetch";
+import bent from 'bent';
+// 定义使用POST方式请求并返回文本
+const post = bent('POST', 'json')
 
 interface TelegraphUploadData {
   access_token: string;
@@ -23,7 +26,7 @@ const html: string = fs.readFileSync("./src/sr-read-content.html", "utf-8");
 const dom = new JSDOM(html);
 const doc = dom.window.document.body;
 
-export function publish(
+export async function publish(
   access_token: string,
   title: string,
   content: object,
@@ -37,24 +40,31 @@ export function publish(
     content: JSON.stringify(content),
     return_content: return_content || false,
   };
-
+  console.log(data);
   // POST to api.telegra.ph/createPage
-  return fetch("https://api.telegra.ph/createPage", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  }).then((res: any) => callback(null, res.json()));
+  const obj = await post('https://api.telegra.ph/createPage', data);
+  console.log("Got res data! It is:")
+  console.log(obj);
 }
 
 //console.log(domToNode(doc));
 //console.log(JSON.stringify(domToNode(doc)));
 //console.log("===============================================\n");
-const testobj = domToNode(filterContent(doc, dom));
+const testobj = domToNode(filterContent(doc, dom)).children[0].children;
+
+const exampleobj = { // AN EXAMPLE
+  "tag": "body",
+  "children": [{
+      "tag": "sr-rd-content",
+      "children": [{
+          "tag": "p"
+      }, "\\n"]
+  }]
+}
+
 publish(
   "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d",
-  "测试",
+  "ceui",
   testobj,
   (err, res) => {
     console.log(res);

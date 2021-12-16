@@ -12,6 +12,7 @@
   "author": "OverflowCat",
   "license": "MIT",
   "devDependencies": {
+    "@types/bent": "^7.3.2",
     "@types/jsdom": "^16.2.13",
     "@types/node": "^16.11.11",
     "@types/restify": "^8.5.4",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "@types/node-fetch": "^3.0.3",
+    "bent": "^7.3.12",
     "cross-fetch": "^3.1.4",
     "form-data": "^4.0.0",
     "jsdom": "^19.0.0",

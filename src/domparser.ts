@@ -22,7 +22,7 @@ export function domToNode(domNode: HTMLElement) {
 }
 
 export function nodeToDom(node: any) {
-  if (typeof node === 'string' || node instanceof String) 
+  if (typeof node === 'string' || node instanceof String)
     return document.createTextNode(node.toString());
   if (node.tag) {
     var domNode: any = document.createElement(node.tag);
@@ -30,7 +30,7 @@ export function nodeToDom(node: any) {
       for (var name in node.attrs) domNode.setAttribute(name, node.attrs[name]);
     }
   } else {
-    var domNode : any = document.createDocumentFragment();
+    var domNode: any = document.createDocumentFragment();
   }
   if (node.children) {
     for (var i = 0; i < node.children.length; i++) {
@@ -39,3 +39,27 @@ export function nodeToDom(node: any) {
   }
   return domNode;
 }
+
+/*
+function nodeFilter(obj) {
+  console.log(obj);
+  if (typeof (obj) == "object") {
+    if (obj["tag"] === "body" || obj["tag"].startsWith("sr-")) {
+      if (obj["children"]) return nodeFilter(obj.children[0]);
+      else return obj;
+    }
+    else {
+      if (obj["children"]) {
+        const children = obj.children.map(c => nodeFilter(c))
+        return {
+          "tag": obj.tag,
+          "children": children
+        }
+      };
+      return obj;
+    }
+  } else {
+    return obj;
+  }
+}
+*/
