@@ -1,9 +1,8 @@
 import { domToNode, nodeToDom } from "./domparser";
 import fs from "fs";
 import { filterContent } from "./filter";
-//import fetch from "cross-fetch";
+import { uploadDomMedia } from "./mediahandler";
 import bent from 'bent';
-// 定义使用POST方式请求并返回文本
 const post = bent('POST', 'json')
 
 interface TelegraphUploadData {
@@ -24,7 +23,7 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const html: string = fs.readFileSync("./src/sr-read-content.html", "utf-8");
 const dom = new JSDOM(html);
-const doc = dom.window.document.body;
+const document = dom.window.document.body;
 
 export async function publish(
   access_token: string,
@@ -47,26 +46,37 @@ export async function publish(
   console.log(obj);
 }
 
-//console.log(domToNode(doc));
-//console.log(JSON.stringify(domToNode(doc)));
+//console.log(domToNode(document));
+//console.log(JSON.stringify(domToNode(document)));
 //console.log("===============================================\n");
-const testobj = domToNode(filterContent(doc, dom)).children[0].children;
+
+async function test() {
+  const filtered_content = filterContent(document, dom);
+  console.log("Filtered is: ", filtered_content.outerHTML);
+  const uploaded_content = await uploadDomMedia(filtered_content, dom);
+  console.log("Uploaded is: ", uploaded_content.outerHTML);
+  const testobj = domToNode(uploaded_content).children[0].children;
+  console.log("Testobj is: ", testobj)
+
+
+  publish(
+    "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d",
+    "ceui",
+    testobj,
+    (err, res) => {
+      console.log(res);
+    }
+  );
+}
+
+test();
 
 const exampleobj = { // AN EXAMPLE
   "tag": "body",
   "children": [{
-      "tag": "sr-rd-content",
-      "children": [{
-          "tag": "p"
-      }, "\\n"]
+    "tag": "sr-rd-content",
+    "children": [{
+      "tag": "p"
+    }, "\\n"]
   }]
 }
-
-publish(
-  "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d",
-  "ceui",
-  testobj,
-  (err, res) => {
-    console.log(res);
-  }
-);

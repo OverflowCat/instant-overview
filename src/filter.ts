@@ -7,6 +7,8 @@ export function filterContent(dom: HTMLElement, document: Document): HTMLElement
     parent?.removeChild(ele);
   }
 
+  dom.querySelectorAll("style").forEach(ele => ele.remove());
+
   // br
   dom.innerHTML = dom.innerHTML
     .replace(/(<br( *\/? *|\s[^<>]*)>\s*)+/gim, "\n")
@@ -69,7 +71,7 @@ export function filterContent(dom: HTMLElement, document: Document): HTMLElement
       code_tag.innerText = (<HTMLElement>ele).innerText;
     }
 
-  if (dom.querySelector("sr-rd-mult")) {
+  if (dom.querySelector("sr-rd-mult") != null) {
     let parent = dom.querySelector("sr-rd-mult")?.parentNode;
     if (parent) {
       for (let mult of parent.children) {

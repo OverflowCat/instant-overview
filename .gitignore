@@ -18,6 +18,7 @@ src/domparser.js
 src/uploader.js
 src/filter.js
 src/index.js
+src/mediahandler.js
 src/sr-read-content.html
 
 # Coverage reports
