@@ -1,3 +1,8 @@
+export type graphNode = "\\n" | {
+  tag: string;
+  children ?: graphNode[];
+};
+
 export function domToNode(domNode: HTMLElement) {
   if (domNode.nodeType == domNode.TEXT_NODE) {
     return domNode.textContent;

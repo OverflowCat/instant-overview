@@ -23,7 +23,8 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const html: string = fs.readFileSync("./src/sr-read-content.html", "utf-8");
 const dom = new JSDOM(html);
-const document = dom.window.document.body;
+const document = dom.window.document;
+const body = document.body;
 
 export async function publish(
   access_token: string,
@@ -51,17 +52,16 @@ export async function publish(
 //console.log("===============================================\n");
 
 async function test() {
-  const filtered_content = filterContent(document, dom);
-  console.log("Filtered is: ", filtered_content.outerHTML);
-  const uploaded_content = await uploadDomMedia(filtered_content, dom);
-  console.log("Uploaded is: ", uploaded_content.outerHTML);
+  const filtered_content = filterContent(body, document);
+  //console.log("Filtered is: ", filtered_content.outerHTML);
+  const uploaded_content = await uploadDomMedia(filtered_content, document);
+  //console.log("Uploaded is: ", uploaded_content.outerHTML);
   const testobj = domToNode(uploaded_content).children[0].children;
-  console.log("Testobj is: ", testobj)
-
+  //console.log("Testobj is: ", testobj)
 
   publish(
     "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d",
-    "ceui",
+    "SimpreadAPITest",
     testobj,
     (err, res) => {
       console.log(res);
