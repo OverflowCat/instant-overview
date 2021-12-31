@@ -2,9 +2,11 @@
   "name": "instant-overview",
   "version": "0.1.0",
   "description": "Yet another API for converting HTML to Instant View articles.",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
-    "test": "node src/uploader.js"
+    "dev:watch": "tsc -w",
+    "dev:start": "nodemon node ./build/crowlloer.js",
+    "dev": "concurrently npm:dev:*"
   },
   "keywords": [
     "Telegram"
@@ -14,7 +16,7 @@
   "devDependencies": {
     "@types/bent": "^7.3.2",
     "@types/jsdom": "^16.2.13",
-    "@types/node": "^16.11.11",
+    "@types/node": "^16.11.17",
     "@types/restify": "^8.5.4",
     "tslint": "^6.1.3",
     "typescript": "^4.5.2"
@@ -23,10 +25,10 @@
     "@types/node-fetch": "^3.0.3",
     "bent": "^7.3.12",
     "cross-fetch": "^3.1.4",
+    "fastify": "^3.25.3",
     "form-data": "^4.0.0",
     "jsdom": "^19.0.0",
     "node-fetch": "^3.1.0",
-    "restify": "^8.6.0",
     "stream-to-array": "^2.3.0",
     "telegraph-uploader": "^2.0.0"
   }

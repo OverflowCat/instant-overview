@@ -11,7 +11,7 @@ export async function uploadMedia(link: URL): Promise<URL> {
     //  .then((result: MediaUploadResponse) => console.log(result))
   } catch (e) {
     console.warn("MEDIA UPLOADING ERR: " + link.toString);
-    return link; // 返回原来的链接
+    return link; // Use the original link instead. It'll work well on telegra.ph the website.
   }
   if (!result.startsWith('/')) result = '/' + result;
   console.log("== Got link! Uploaded file is at", "https://telegra.ph" + result);
@@ -27,7 +27,6 @@ export async function uploadDomMedia(dom: HTMLElement, document: Document): Prom
   for (let x of imglist) {
     console.log("== Now Uploading img ", x.src);
     x.src = (await uploadMedia(<URL>x.src)).toString();
-    // console.log("现在的 x.src 是：", x.src);
   }
   return dom;
 }

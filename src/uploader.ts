@@ -26,7 +26,28 @@ const dom = new JSDOM(html);
 const document = dom.window.document;
 const body = document.body;
 
-export async function publish(
+export async function publish_sr_content(
+  access_token: string,
+  title: string,
+  content: string,
+  callback: (err: Error | null, data: any) => void,
+  path?: string,
+  return_content?: boolean
+) {
+  const filtered_content = filterContent(body, document);
+  const uploaded_content = await uploadDomMedia(filtered_content, document);
+  const finalobj = domToNode(uploaded_content).children[0].children;
+  return publish(
+    access_token,
+    title,
+    finalobj,
+    callback,
+    path,
+    return_content
+    );
+};
+
+async function publish(
   access_token: string,
   title: string,
   content: object,
@@ -43,8 +64,7 @@ export async function publish(
   console.log(data);
   // POST to api.telegra.ph/createPage
   const obj = await post('https://api.telegra.ph/createPage', data);
-  console.log("Got res data! It is:")
-  console.log(obj);
+  callback(null, obj);
 }
 
 //console.log(domToNode(document));
@@ -69,7 +89,7 @@ async function test() {
   );
 }
 
-test();
+// test();
 
 const exampleobj = { // AN EXAMPLE
   "tag": "body",
