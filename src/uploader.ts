@@ -2,8 +2,8 @@ import { domToNode, nodeToDom } from "./domparser";
 import fs from "fs";
 import { filterContent } from "./filter";
 import { uploadDomMedia } from "./mediahandler";
-import bent from 'bent';
-const post = bent('POST', 'json')
+import bent from "bent";
+const post = bent("POST", "json");
 
 interface TelegraphUploadData {
   access_token: string;
@@ -62,7 +62,7 @@ async function publish(
   };
   console.log(data);
   // POST to api.telegra.ph/createPage
-  const obj = await post('https://api.telegra.ph/createPage', data);
+  const obj = await post("https://api.telegra.ph/createPage", data);
   callback(null, obj);
 }
 
@@ -92,14 +92,20 @@ async function test() {
   );
 }
 
-// test();
+test();
 
-const exampleobj = { // AN EXAMPLE
-  "tag": "body",
-  "children": [{
-    "tag": "sr-rd-content",
-    "children": [{
-      "tag": "p"
-    }, "\\n"]
-  }]
-}
+const exampleobj = {
+  // AN EXAMPLE
+  tag: "body",
+  children: [
+    {
+      tag: "sr-rd-content",
+      children: [
+        {
+          tag: "p",
+        },
+        "\\n",
+      ],
+    },
+  ],
+};
