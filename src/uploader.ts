@@ -2,8 +2,8 @@ import { domToNode, nodeToDom } from "./domparser";
 import fs from "fs";
 import { filterContent } from "./filter";
 import { uploadDomMedia } from "./mediahandler";
-import bent from 'bent';
-const post = bent('POST', 'json')
+import bent from "bent";
+const post = bent("POST", "json");
 
 interface TelegraphUploadData {
   access_token: string;
@@ -21,10 +21,6 @@ const limitLength = (text: string): string => {
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
-const html: string = fs.readFileSync("./src/sr-read-content.html", "utf-8");
-const dom = new JSDOM(html);
-const document = dom.window.document;
-const body = document.body;
 
 export async function publish_sr_content(
   access_token: string,
@@ -34,18 +30,14 @@ export async function publish_sr_content(
   path?: string,
   return_content?: boolean
 ) {
+  const dom = new JSDOM(content);
+  const document = dom.window.document;
+  const body = document.body;
   const filtered_content = filterContent(body, document);
   const uploaded_content = await uploadDomMedia(filtered_content, document);
   const finalobj = domToNode(uploaded_content).children[0].children;
-  return publish(
-    access_token,
-    title,
-    finalobj,
-    callback,
-    path,
-    return_content
-    );
-};
+  return publish(access_token, title, finalobj, callback, path, return_content);
+}
 
 async function publish(
   access_token: string,
@@ -63,7 +55,7 @@ async function publish(
   };
   console.log(data);
   // POST to api.telegra.ph/createPage
-  const obj = await post('https://api.telegra.ph/createPage', data);
+  const obj = await post("https://api.telegra.ph/createPage", data);
   callback(null, obj);
 }
 
@@ -72,6 +64,10 @@ async function publish(
 //console.log("===============================================\n");
 
 async function test() {
+  const html: string = fs.readFileSync("./src/sr-read-content.html", "utf-8");
+  const dom = new JSDOM(html);
+  const document = dom.window.document;
+  const body = document.body;
   const filtered_content = filterContent(body, document);
   //console.log("Filtered is: ", filtered_content.outerHTML);
   const uploaded_content = await uploadDomMedia(filtered_content, document);
@@ -89,14 +85,20 @@ async function test() {
   );
 }
 
-// test();
+test();
 
-const exampleobj = { // AN EXAMPLE
-  "tag": "body",
-  "children": [{
-    "tag": "sr-rd-content",
-    "children": [{
-      "tag": "p"
-    }, "\\n"]
-  }]
-}
+const exampleobj = {
+  // AN EXAMPLE
+  tag: "body",
+  children: [
+    {
+      tag: "sr-rd-content",
+      children: [
+        {
+          tag: "p",
+        },
+        "\\n",
+      ],
+    },
+  ],
+};
