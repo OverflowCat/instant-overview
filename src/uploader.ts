@@ -26,7 +26,6 @@ export async function publish_sr_content(
   access_token: string,
   title: string,
   content: string,
-//callback: (err: Error | null, data: any) => void,
   path?: string,
   return_content?: boolean
 ) {
@@ -50,7 +49,6 @@ async function publish(
   access_token: string,
   title: string,
   content: object,
-//callback: (err: Error | null, data: any) => void,
   path?: string,
   return_content?: boolean
 ) {

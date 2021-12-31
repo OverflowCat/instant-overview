@@ -47,6 +47,8 @@ export function filterContent(dom: HTMLElement, document: Document): HTMLElement
     x.replaceWith(...x.childNodes);
   });
 
+  // #TODO: Extract the image from unecessary elements in a <figure>
+
   // hljs
   const _hljs = dom.querySelectorAll(".hljs");
   if (_hljs)
