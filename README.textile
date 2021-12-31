@@ -1,0 +1,46 @@
+h1. instant-overview
+
+h2. Description
+
+@instant-overview@ is an ᴀᴘɪ backend made for "SimpRead":http://ksria.com/simpread/ the browser extension ("Kenshin/simpread":https://github.com/Kenshin/simpread), which lets you generate "Telegraph":https://telegra.ph/ archives from reader-mode pages of Simpread with ease.
+
+h2. Usage
+
+**We will host an official instance on Vercel at [to be implemented], but it is a click away to host your own one.** Currently we do not store any data. Changes may be made in the future.
+
+h2. Development and deployment
+
+Bug fixes and contribution are welcome. Part of the code will be share in the "Save to Telegraph" plugin in SimpRead to optimize the logic for crawling key parts of webpages.
+
+h3. Setting up the environment
+
+* Clone this repository
+
+bc(. git clone https://github.com/OverflowCat/instant-overview.git --depth=1
+cd instant-overview
+
+* Install @nodejs@ and @npm@
+
+bc(. sudo apt update
+sudo apt install nodejs npm
+
+* Install dependencies
+
+bc(. npm install
+npm install -g typescript nodemon concurrently
+
+* Develop and debug
+
+bc(. npm run dev
+
+* Compile to JavaScript
+
+bc(. tsc
+
+* Run the program
+
+bc(. node src/index.js
+
+h3. Functionality
+
+The server will respond to ᴘᴏsᴛ requests at @[IP]:7784/publish@. Sample request and response have been written in "@src/index.ts@":https://github.com/OverflowCat/instant-overview/blob/master/src/index.ts.

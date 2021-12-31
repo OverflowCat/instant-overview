@@ -26,7 +26,7 @@ export async function publish_sr_content(
   access_token: string,
   title: string,
   content: string,
-  callback: (err: Error | null, data: any) => void,
+//callback: (err: Error | null, data: any) => void,
   path?: string,
   return_content?: boolean
 ) {
@@ -40,7 +40,7 @@ export async function publish_sr_content(
     access_token,
     title,
     finalobj,
-    callback,
+  //callback,
     path,
     return_content
   );
@@ -50,7 +50,7 @@ async function publish(
   access_token: string,
   title: string,
   content: object,
-  callback: (err: Error | null, data: any) => void,
+//callback: (err: Error | null, data: any) => void,
   path?: string,
   return_content?: boolean
 ) {
@@ -62,37 +62,28 @@ async function publish(
   };
   console.log(data);
   // POST to api.telegra.ph/createPage
-  const obj = await post("https://api.telegra.ph/createPage", data);
-  callback(null, obj);
+  return await post("https://api.telegra.ph/createPage", data);
 }
-
-//console.log(domToNode(document));
-//console.log(JSON.stringify(domToNode(document)));
-//console.log("===============================================\n");
 
 async function test() {
   const html: string = fs.readFileSync("./src/sr-read-content.html", "utf-8");
+  // copy'n'pasted content from <sr-rd-content> in a random SimpRead page
   const dom = new JSDOM(html);
   const document = dom.window.document;
   const body = document.body;
   const filtered_content = filterContent(body, document);
-  //console.log("Filtered is: ", filtered_content.outerHTML);
   const uploaded_content = await uploadDomMedia(filtered_content, document);
-  //console.log("Uploaded is: ", uploaded_content.outerHTML);
   const testobj = domToNode(uploaded_content).children[0].children;
-  //console.log("Testobj is: ", testobj)
 
-  publish(
+  await publish(
     "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d",
     "SimpreadAPITest",
-    testobj,
-    (err, res) => {
-      console.log(res);
-    }
+    testobj
+    //(err, res) => {console.log(res);}
   );
 }
 
-test();
+// test();
 
 const exampleobj = {
   // AN EXAMPLE
