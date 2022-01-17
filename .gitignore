@@ -21,6 +21,8 @@ src/index.js
 src/mediahandler.js
 src/sr-read-content.html
 src/exec.js
+vercel
+single
 
 # Coverage reports
 coverage
