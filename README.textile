@@ -37,6 +37,10 @@ bc(. npm run dev
 
 bc(. tsc
 
+* Compile to a single file
+
+bc(. ncc build src/exec.ts -o single/instant-overview.js -m
+
 * Run the program
 
 bc(. node src/index.js

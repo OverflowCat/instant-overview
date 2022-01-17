@@ -1,4 +1,7 @@
-export function filterContent(dom: HTMLElement, document: Document): HTMLElement {
+export function filterContent(
+  dom: HTMLElement,
+  document: Document
+): HTMLElement {
   function changeTagName(ele: HTMLElement | Element, newTagName: string): void {
     var parent = ele.parentNode;
     var newElement = document.createElement(newTagName);
@@ -7,7 +10,7 @@ export function filterContent(dom: HTMLElement, document: Document): HTMLElement
     parent?.removeChild(ele);
   }
 
-  dom.querySelectorAll("style").forEach(ele => ele.remove());
+  dom.querySelectorAll("style").forEach((ele) => ele.remove());
 
   // br
   dom.innerHTML = dom.innerHTML
@@ -41,6 +44,19 @@ export function filterContent(dom: HTMLElement, document: Document): HTMLElement
 
   // <section>
   dom.querySelectorAll("section").forEach((x) => {
+    let els = [],
+      a : HTMLElement | null = x;
+    while (a) {
+      els.unshift(a);
+      a = a.parentElement;
+    }
+    let flag = false;
+    els.forEach((y) => {
+      if (y.tagName === "LI" || y.tagName === "UL") {
+        flag = true;
+      }
+    })
+    if (flag) return;
     // append a <hr> tag to the end of the section
     x.innerHTML += "<hr>";
     // replace <section> with its child elements

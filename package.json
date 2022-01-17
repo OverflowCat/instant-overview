@@ -8,7 +8,8 @@
     "build": "tsc",
     "dev:watch": "tsc -w",
     "dev:start": "nodemon node ./build/crowlloer.js",
-    "dev": "concurrently npm:dev:*"
+    "dev": "concurrently npm:dev:*",
+    "single": "ncc src/exec.ts -m -o single/instant-overview.js"
   },
   "keywords": [
     "Telegram"
