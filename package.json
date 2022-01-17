@@ -4,6 +4,8 @@
   "description": "Yet another API for converting HTML to Instant View articles.",
   "main": "./src/index.js",
   "scripts": {
+    "start": "node ./src/index.js",
+    "build": "tsc",
     "dev:watch": "tsc -w",
     "dev:start": "nodemon node ./build/crowlloer.js",
     "dev": "concurrently npm:dev:*"

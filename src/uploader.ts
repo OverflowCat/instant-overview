@@ -12,6 +12,26 @@ interface TelegraphUploadData {
   return_content: boolean;
 }
 
+interface TelegraphCreateArticleResponse {
+  ok: boolean;
+  result?: {
+    path: string;
+    url: string;
+    title: string;
+    description: string;
+    views: number;
+    can_edit: boolean;
+    author_name?: string;
+    // Optional. Name of the author, displayed below the title.
+    author_url?: string;
+    // Optional. Profile link, opened when users click on the author's name below the title.  Can be any link, not necessarily to a Telegram profile or channel.
+    image_url?: string;
+    // Optional. Image URL of the page.
+    content?: any;
+    // Optional. Content of the page.
+  };
+}
+
 const limitLength = (text: string): string => {
   if (text.length >= 85) return text.slice(0, 84) + "…";
   if (text.length <= 1) return "SimpRead-" + text;
@@ -60,7 +80,7 @@ async function publish(
   };
   console.log(data);
   // POST to api.telegra.ph/createPage
-  return await post("https://api.telegra.ph/createPage", data);
+  return await (post("https://api.telegra.ph/createPage", data)) as Promise<TelegraphCreateArticleResponse>;
 }
 
 async function test() {
