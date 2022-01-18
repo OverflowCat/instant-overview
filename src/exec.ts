@@ -13,12 +13,16 @@ interface Telegram {
   link?: string;
 }
 interface PublishParameters {
+  version?: number;
   article: Article;
   telegram?: Telegram;
   telegraph?: {
     access_token?: string;
     author_name?: string;
     author_url?: string;
+  };
+  style?: {
+    use_desc?: boolean;
   };
 }
 interface TelegraphCreateArticleResponse {
@@ -62,13 +66,16 @@ export async function publish(
       var access_token = param.telegraph.access_token;
     else
       var access_token =
-        process.env.ENV_VARIABLE ||
+        process.env.SR_TELEGRAPH_ACCESS_TOKEN ||
+        process.env.TELEGRAPH_ACCESS_TOKEN ||
         "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d";
+    if (param?.style?.use_desc === true)
+      param.article.content = `<blockquote>${param.article.desc}</blockquote>${param.article.content}`;
     const res = await publish_sr_content(
       access_token,
       param.article.title || "SimpreadArticle",
       param.article.content,
-      undefined,
+      undefined, // path not implemented
       false,
       author_name,
       author_url

@@ -1,12 +1,11 @@
 import { domToNode, graphNodeTL, lineFilter } from "./domparser";
-import fs from "fs";
+// import fs from "fs";
 import { filterContent } from "./filter";
 import { uploadDomMedia } from "./mediahandler";
-// import bent from "bent";
-// const post = bent("POST", "json");
-import fetch from "node-fetch";
+import bent from "bent";
+const post = bent("POST", "json");
 const needPublish = true;
-const needUploadMedia = true;
+const needUploadMedia = false;
 
 interface TelegraphCreatePageRequest {
   /* createPage
@@ -64,28 +63,21 @@ export async function publish_sr_content(
   author_name?: string,
   author_url?: string
 ) {
-  content = content.replace(
-    RegExp(
-      `
-`,
-      "g"
-    ),
-    ""
-  );
   const dom = new JSDOM(content);
   const document = dom.window.document;
   const body = document.body;
   const filtered_content = filterContent(body, document);
+  console.log(needUploadMedia, needPublish)
   const uploaded_content =
     needUploadMedia && needPublish
       ? await uploadDomMedia(filtered_content, document)
       : filtered_content;
+
   let lineFilted = lineFilter(domToNode(uploaded_content));
   if (typeof lineFilted !== "string") {
     if (lineFilted.children) {
       const obj = lineFilted.children[0];
       if (typeof obj !== "string") {
-        console.warn("15");
         const finalobj = obj.children;
         if (needPublish)
           return publish(
@@ -122,13 +114,12 @@ async function publish(
     content: content,
     return_content: return_content || false,
   };
+  console.log(JSON.stringify(data));
   // POST to api.telegra.ph/createPage
-  return (await (
-    await fetch("https://api.telegra.ph/createPage", {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
-  ).json()) as Promise<TelegraphCreateArticleResponse>;
+  return (await post(
+    "https://api.telegra.ph/createPage",
+    data
+  )) as Promise<TelegraphCreateArticleResponse>;
 }
 
 // test deleted here

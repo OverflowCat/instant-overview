@@ -47,6 +47,7 @@ export function nodeToDom(node: any) {
 }
 
 export function lineFilter(obj: graphNode): graphNode {
+  // const orgObj = JSON.parse(JSON.stringify(obj));
   if (typeof obj === "object") {
     if (obj.children) {
       let children = obj.children;
@@ -55,25 +56,24 @@ export function lineFilter(obj: graphNode): graphNode {
           return lineFilter(child);
         })
         .filter((child) => {
-          const result =
-            typeof child === "string" &&
-            (/\n/.test(child.trim()) || // Contains linebreak
-              child.trim() === ""); // All whitespace chars
-          //console.log("!CHILD", child, "whitespace", result);
-          return !result;
+          if (typeof child === "string"){
+            if (/\n/.test(child)) return true;
+            if (child.trim() === "") return false;
+          }
+          return true;
+          
+          //const result1 =
+          //  typeof child === "string" &&
+          //  (/\n/.test(child.trim()) || // Contains linebreak
+          //    child.trim() === ""); // All whitespace chars
+          //const result2 = obj.tag === "code" || obj.tag === "pre" || !result1;
+          //console.log("!CHILD", child, "whitespace", result1);
+          //return result2;
         });
       obj.children = children;
       return obj;
-      /*obj.children.map((child, index) => {
-          if (typeof child === "string" && /\n/.test(child.trim())) {
-            const isPrevProblematic = (index>0 && typeof children[index-1] === "object" && children[index-1].tag) ? isProblematic("") : false; 
-            if (obj.children[index])
-          } 
-        })
-        function isProblematic(tagname: string): boolean {
-            return false;
-        }*/
     }
+    // if (obj != orgObj) console.log("N EQ:", obj, "=>", orgObj);
   }
   return obj;
 }
