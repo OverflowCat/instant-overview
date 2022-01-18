@@ -2,16 +2,27 @@ import { domToNode, graphNodeTL, lineFilter } from "./domparser";
 import fs from "fs";
 import { filterContent } from "./filter";
 import { uploadDomMedia } from "./mediahandler";
-import bent from "bent";
-const post = bent("POST", "json");
+// import bent from "bent";
+// const post = bent("POST", "json");
+import fetch from "node-fetch";
 const needPublish = true;
 const needUploadMedia = true;
 
-interface TelegraphUploadData {
-  access_token: string;
-  title: string;
-  content: string;
-  return_content: boolean;
+interface TelegraphCreatePageRequest {
+  /* createPage
+  Use this method to create a new Telegraph page. On success, returns a Page object. */
+  access_token: string; // access_token (String)
+  // Required. Access token of the Telegraph account.
+  title: string; // title (String, 1-256 characters)
+  // Required. Page title.
+  author_name?: string; // author_name (String, 0-128 characters)
+  // Author name, displayed below the article's title.
+  author_url?: string; // (String, 0-512 characters)
+  // Profile link, opened when users click on the author's name below the title. Can be any link, not necessarily to a Telegram profile or channel.
+  content: object; // (Array of Node, up to 64 KB)
+  // Required. Content of the page.
+  return_content?: boolean; // return_content (Boolean, default = false)
+  // If true, a content field will be returned in the Page object (see: Content format). */
 }
 
 interface TelegraphCreateArticleResponse {
@@ -49,7 +60,9 @@ export async function publish_sr_content(
   title: string,
   content: string,
   path?: string,
-  return_content?: boolean
+  return_content: boolean = false,
+  author_name?: string,
+  author_url?: string
 ) {
   content = content.replace(
     RegExp(
@@ -72,7 +85,7 @@ export async function publish_sr_content(
     if (lineFilted.children) {
       const obj = lineFilted.children[0];
       if (typeof obj !== "string") {
-        console.warn("15")
+        console.warn("15");
         const finalobj = obj.children;
         if (needPublish)
           return publish(
@@ -81,7 +94,9 @@ export async function publish_sr_content(
             finalobj,
             //callback,
             path,
-            return_content
+            return_content,
+            author_name,
+            author_url
           );
         else console.log("Finalobj is:", JSON.stringify(finalobj));
       }
@@ -95,54 +110,25 @@ async function publish(
   title: string,
   content: any,
   path?: string,
-  return_content?: boolean
+  return_content?: boolean,
+  author_name?: string,
+  author_url?: string
 ) {
-  const data: TelegraphUploadData = {
+  const data: TelegraphCreatePageRequest = {
     access_token: access_token,
     title: limitLength(title),
-    content: JSON.stringify(content),
+    author_name: author_name,
+    author_url: author_url,
+    content: content,
     return_content: return_content || false,
   };
-  console.log(data);
   // POST to api.telegra.ph/createPage
-  return (await post(
-    "https://api.telegra.ph/createPage",
-    data
-  )) as Promise<TelegraphCreateArticleResponse>;
+  return (await (
+    await fetch("https://api.telegra.ph/createPage", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+  ).json()) as Promise<TelegraphCreateArticleResponse>;
 }
 
-async function test() {
-  const html: string = fs.readFileSync("./src/sr-read-content.html", "utf-8");
-  // copy'n'pasted content from <sr-rd-content> in a random SimpRead page
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
-  const body = document.body;
-  const filtered_content = filterContent(body, document);
-  const uploaded_content = await uploadDomMedia(filtered_content, document);
-  const testobj = domToNode(uploaded_content).children[0].children;
-
-  await publish(
-    "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d",
-    "SimpreadAPITest",
-    testobj
-    //(err, res) => {console.log(res);}
-  );
-}
-
-// test();
-
-const exampleobj = {
-  // AN EXAMPLE
-  tag: "body",
-  children: [
-    {
-      tag: "sr-rd-content",
-      children: [
-        {
-          tag: "p",
-        },
-        "\\n",
-      ],
-    },
-  ],
-};
+// test deleted here

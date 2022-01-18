@@ -8,14 +8,18 @@ interface Article {
   tags: string;
 }
 interface Telegram {
-
+  bind?: boolean;
+  name?: string;
+  link?: string;
 }
 interface PublishParameters {
   article: Article;
   telegram?: Telegram;
   telegraph?: {
     access_token?: string;
-  }
+    author_name?: string;
+    author_url?: string;
+  };
 }
 interface TelegraphCreateArticleResponse {
   ok: boolean;
@@ -42,21 +46,41 @@ interface PublishResponse {
   telegram?: any;
 }
 
-export async function publish(param: PublishParameters) : Promise<PublishResponse>{
+export async function publish(
+  param: PublishParameters
+): Promise<PublishResponse> {
   try {
-  const res = await publish_sr_content(
-    "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d",
-    param.article.title || "SimpreadArticle",
-    param.article.content
-  );
-  return {
-    status: "success",
-    telegraph: res,
-  };}
-  catch (e) {
+    const url = param.article.url;
+    const { hostname } = new URL(url);
+    let author_url = param.telegraph?.author_url || url;
+    let author_name = param.telegraph?.author_name || hostname;
+    if (param.telegram && param.telegram.bind === true) {
+      if (param.telegram.name) author_name = param.telegram.name;
+      if (param.telegram.link) author_url = param.telegram.link;
+    }
+    if (param?.telegraph?.access_token)
+      var access_token = param.telegraph.access_token;
+    else
+      var access_token =
+        process.env.ENV_VARIABLE ||
+        "4e7863a07443979b1523e3a78b5251188815a5ada9b32bb6d3ec852e808d";
+    const res = await publish_sr_content(
+      access_token,
+      param.article.title || "SimpreadArticle",
+      param.article.content,
+      undefined,
+      false,
+      author_name,
+      author_url
+    );
+    return {
+      status: "success",
+      telegraph: res,
+    };
+  } catch (e) {
     console.log(e);
     return {
-      status: "error"
-    }
+      status: "error",
+    };
   }
 }
