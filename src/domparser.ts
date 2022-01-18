@@ -47,9 +47,7 @@ export function nodeToDom(node: any) {
 }
 
 export function lineFilter(obj: graphNode): graphNode {
-  // console.log(obj);
   if (typeof obj === "object") {
-    console.log("object is ", obj);
     if (obj.children) {
       let children = obj.children;
       children = children
@@ -61,10 +59,9 @@ export function lineFilter(obj: graphNode): graphNode {
             typeof child === "string" &&
             (/\n/.test(child.trim()) || // Contains linebreak
               child.trim() === ""); // All whitespace chars
-          console.log("!CHILD", child, "whitespace", result);
+          //console.log("!CHILD", child, "whitespace", result);
           return !result;
         });
-      console.log("4!");
       obj.children = children;
       return obj;
       /*obj.children.map((child, index) => {

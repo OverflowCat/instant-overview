@@ -69,23 +69,25 @@ export async function publish_sr_content(
       : filtered_content;
   let lineFilted = lineFilter(domToNode(uploaded_content));
   if (typeof lineFilted !== "string") {
-    if (lineFilted.children){
-    const obj = lineFilted.children[0];
-    if (typeof obj !== "string"){
-      const finalobj = obj.children;
-      if (needPublish)
-      return publish(
-        access_token,
-        title,
-        finalobj,
-        //callback,
-        path,
-        return_content
-      );
-    else console.log("Finalobj is:", JSON.stringify(finalobj));
+    if (lineFilted.children) {
+      const obj = lineFilted.children[0];
+      if (typeof obj !== "string") {
+        console.warn("15")
+        const finalobj = obj.children;
+        if (needPublish)
+          return publish(
+            access_token,
+            title,
+            finalobj,
+            //callback,
+            path,
+            return_content
+          );
+        else console.log("Finalobj is:", JSON.stringify(finalobj));
+      }
     }
-  }}
-  console.warn(`Ran into error when publishing ${title}.`)
+  }
+  console.warn(`Ran into error when publishing ${title}.`);
 }
 
 async function publish(

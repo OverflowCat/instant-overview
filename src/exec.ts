@@ -1,4 +1,5 @@
 import { publish_sr_content } from "./uploader";
+
 interface Article {
   url: string;
   title: string;
@@ -12,6 +13,9 @@ interface Telegram {
 interface PublishParameters {
   article: Article;
   telegram?: Telegram;
+  telegraph?: {
+    access_token?: string;
+  }
 }
 interface TelegraphCreateArticleResponse {
   ok: boolean;
@@ -37,6 +41,7 @@ interface PublishResponse {
   telegraph?: TelegraphCreateArticleResponse;
   telegram?: any;
 }
+
 export async function publish(param: PublishParameters) : Promise<PublishResponse>{
   try {
   const res = await publish_sr_content(
