@@ -73,7 +73,7 @@ export async function publish(
       param.article.content = `<blockquote>${param.article.desc}</blockquote>${param.article.content}`;
     const res = await publish_sr_content(
       access_token,
-      param.article.title || "SimpreadArticle",
+      param.article.title?.replace(/ +\-+ +/g, "—") || "SimpreadArticle",
       param.article.content,
       undefined, // path not implemented
       false,
@@ -85,7 +85,7 @@ export async function publish(
       telegraph: res,
     };
   } catch (e) {
-    console.log(e);
+    console.warn(e);
     return {
       status: "error",
     };

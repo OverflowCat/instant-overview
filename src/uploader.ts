@@ -5,7 +5,7 @@ import { uploadDomMedia } from "./mediahandler";
 import bent from "bent";
 const post = bent("POST", "json");
 const needPublish = true;
-const needUploadMedia = false;
+const needUploadMedia = true;
 
 interface TelegraphCreatePageRequest {
   /* createPage
@@ -67,7 +67,6 @@ export async function publish_sr_content(
   const document = dom.window.document;
   const body = document.body;
   const filtered_content = filterContent(body, document);
-  console.log(needUploadMedia, needPublish)
   const uploaded_content =
     needUploadMedia && needPublish
       ? await uploadDomMedia(filtered_content, document)

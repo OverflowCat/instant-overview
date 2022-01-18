@@ -135,5 +135,51 @@ export function filterContent(
       }
     }
   }
+
+  // table
+  document.querySelectorAll("table").forEach((ele) => {
+    ele.outerHTML = json2Html(table2Json(ele));
+  });
+
   return dom;
+}
+
+function table2Json(table: HTMLTableElement) {
+  var data = [];
+  // first row needs to be headers
+  var headers: any = [];
+  for (var i = 0; i < table.rows[0].cells.length; i++) {
+    headers[i] = table.rows[0].cells[i].innerHTML
+      .toLowerCase()
+      .replace(/ /gi, "");
+  }
+
+  // go through cells
+  for (var i = 1; i < table.rows.length; i++) {
+    var tableRow = table.rows[i];
+    var rowData: any = {};
+    for (var j = 0; j < tableRow.cells.length; j++) {
+      rowData[headers[j]] = tableRow.cells[j].innerHTML;
+    }
+    data.push(rowData);
+  }
+  return data;
+}
+
+function json2Html(json: any): any {
+  return (
+    `<ul>` +
+    json
+      .map((line: { [s: string]: unknown } | ArrayLike<unknown>) => {
+        return (
+          "<li>" +
+          Object.entries(line)
+            .map((x) => x.join(": "))
+            .join("\n") +
+          "</li>"
+        );
+      })
+      .join("") +
+    `</ul>`
+  );
 }

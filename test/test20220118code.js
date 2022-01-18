@@ -1,5 +1,5 @@
-const InstantOverview = require("../src/exec.js")
-  //require("../single/index.js");
+const InstantOverview = //require("../src/exec.js")
+  require("../single/index.js");
 const publish = InstantOverview.publish;
 publish({
   article: {
