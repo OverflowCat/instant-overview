@@ -15,7 +15,7 @@ export function filterContent(
   // br
   dom.innerHTML = dom.innerHTML
     .replace(/(<br( *\/? *|\s[^<>]*)>\s*)+/gim, "\n")
-    .replace(/\n+/g, "\n");
+    .replace(/(\n)+/g, "\n");
   /* replace multiple br tags with one line break, and 
   Telegraph will convert it to <br class="inline">. */
 
@@ -45,7 +45,7 @@ export function filterContent(
   // <section>
   dom.querySelectorAll("section").forEach((x) => {
     let els = [],
-      a : HTMLElement | null = x;
+      a: HTMLElement | null = x;
     while (a) {
       els.unshift(a);
       a = a.parentElement;
@@ -55,7 +55,7 @@ export function filterContent(
       if (y.tagName === "LI" || y.tagName === "UL") {
         flag = true;
       }
-    })
+    });
     if (flag) return;
     // append a <hr> tag to the end of the section
     x.innerHTML += "<hr>";

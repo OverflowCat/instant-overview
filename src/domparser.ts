@@ -1,8 +1,9 @@
-export type graphNode = "\\n" | {
-  tag: string;
-  children ?: graphNode[];
-};
+export type graphNode = string | graphNodeTL;
 
+export type graphNodeTL = {
+  tag: string;
+  children?: graphNode[];
+};
 export function domToNode(domNode: HTMLElement) {
   if (domNode.nodeType == domNode.TEXT_NODE) {
     return domNode.textContent;
@@ -27,7 +28,7 @@ export function domToNode(domNode: HTMLElement) {
 }
 
 export function nodeToDom(node: any) {
-  if (typeof node === 'string' || node instanceof String)
+  if (typeof node === "string" || node instanceof String)
     return document.createTextNode(node.toString());
   if (node.tag) {
     var domNode: any = document.createElement(node.tag);
@@ -45,10 +46,44 @@ export function nodeToDom(node: any) {
   return domNode;
 }
 
+export function lineFilter(obj: graphNode): graphNode {
+  // console.log(obj);
+  if (typeof obj === "object") {
+    console.log("object is ", obj);
+    if (obj.children) {
+      let children = obj.children;
+      children = children
+        .map((child) => {
+          return lineFilter(child);
+        })
+        .filter((child) => {
+          const result =
+            typeof child === "string" &&
+            (/\n/.test(child.trim()) || // Contains linebreak
+              child.trim() === ""); // All whitespace chars
+          console.log("!CHILD", child, "whitespace", result);
+          return !result;
+        });
+      console.log("4!");
+      obj.children = children;
+      return obj;
+      /*obj.children.map((child, index) => {
+          if (typeof child === "string" && /\n/.test(child.trim())) {
+            const isPrevProblematic = (index>0 && typeof children[index-1] === "object" && children[index-1].tag) ? isProblematic("") : false; 
+            if (obj.children[index])
+          } 
+        })
+        function isProblematic(tagname: string): boolean {
+            return false;
+        }*/
+    }
+  }
+  return obj;
+}
 /*
-function nodeFilter(obj) {
-  console.log(obj);
-  if (typeof (obj) == "object") {
+  function nodeFilter(obj) {
+    console.log(obj);
+    if (typeof (obj) == "object") {
     if (obj["tag"] === "body" || obj["tag"].startsWith("sr-")) {
       if (obj["children"]) return nodeFilter(obj.children[0]);
       else return obj;

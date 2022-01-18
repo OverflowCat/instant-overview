@@ -1,9 +1,11 @@
-import { domToNode, nodeToDom } from "./domparser";
+import { domToNode, graphNodeTL, lineFilter } from "./domparser";
 import fs from "fs";
 import { filterContent } from "./filter";
 import { uploadDomMedia } from "./mediahandler";
 import bent from "bent";
 const post = bent("POST", "json");
+const needPublish = true;
+const needUploadMedia = true;
 
 interface TelegraphUploadData {
   access_token: string;
@@ -49,26 +51,47 @@ export async function publish_sr_content(
   path?: string,
   return_content?: boolean
 ) {
+  content = content.replace(
+    RegExp(
+      `
+`,
+      "g"
+    ),
+    ""
+  );
   const dom = new JSDOM(content);
   const document = dom.window.document;
   const body = document.body;
   const filtered_content = filterContent(body, document);
-  const uploaded_content = await uploadDomMedia(filtered_content, document);
-  const finalobj = domToNode(uploaded_content).children[0].children;
-  return publish(
-    access_token,
-    title,
-    finalobj,
-  //callback,
-    path,
-    return_content
-  );
-};
+  const uploaded_content =
+    needUploadMedia && needPublish
+      ? await uploadDomMedia(filtered_content, document)
+      : filtered_content;
+  let lineFilted = lineFilter(domToNode(uploaded_content));
+  if (typeof lineFilted !== "string") {
+    if (lineFilted.children){
+    const obj = lineFilted.children[0];
+    if (typeof obj !== "string"){
+      const finalobj = obj.children;
+      if (needPublish)
+      return publish(
+        access_token,
+        title,
+        finalobj,
+        //callback,
+        path,
+        return_content
+      );
+    else console.log("Finalobj is:", JSON.stringify(finalobj));
+    }
+  }}
+  console.warn(`Ran into error when publishing ${title}.`)
+}
 
 async function publish(
   access_token: string,
   title: string,
-  content: object,
+  content: any,
   path?: string,
   return_content?: boolean
 ) {
@@ -80,7 +103,10 @@ async function publish(
   };
   console.log(data);
   // POST to api.telegra.ph/createPage
-  return await (post("https://api.telegra.ph/createPage", data)) as Promise<TelegraphCreateArticleResponse>;
+  return (await post(
+    "https://api.telegra.ph/createPage",
+    data
+  )) as Promise<TelegraphCreateArticleResponse>;
 }
 
 async function test() {
