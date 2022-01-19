@@ -102,7 +102,7 @@ export function filterContent(
           });
           if (ele.querySelectorAll(".hljs").length == 1) {
             ele.parentNode.parentNode &&
-            (<HTMLElement>ele.parentNode.parentNode).tagName == "DIV"
+              (<HTMLElement>ele.parentNode.parentNode).tagName == "DIV"
               ? (code_tag = <HTMLElement>ele.parentNode.parentNode)
               : ele.parentNode;
           }
@@ -167,19 +167,11 @@ function table2Json(table: HTMLTableElement) {
 }
 
 function json2Html(json: any): any {
-  return (
-    `<ul>` +
-    json
-      .map((line: { [s: string]: unknown } | ArrayLike<unknown>) => {
-        return (
-          "<li>" +
-          Object.entries(line)
-            .map((x) => x.join(": "))
-            .join("\n") +
-          "</li>"
-        );
-      })
-      .join("") +
-    `</ul>`
-  );
+  const ulInnerContent = json.map((line: { [s: string]: unknown } | ArrayLike<unknown>) =>
+    "<li>" + Object.entries(line).map((x) => {
+      const separator = /[\u4e00-\u9fa5]/.test(x[0]) ? "：" : ": ";
+      return `<b>${x[0]}</b>${separator}${x[1]}`
+    }) // x is a k-v pair [k, v]
+      .join("\n") + "</li>").join("")
+  return `<ul>${ulInnerContent}</ul>`
 }

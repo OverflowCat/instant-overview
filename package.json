@@ -10,7 +10,7 @@
     "dev:start": "nodemon node ./build/crowlloer.js",
     "dev": "concurrently pnpm:dev:*",
     "single": "ncc build src/exec.ts -o single -m",
-    "test": "node test/test20220118code.js"
+    "test": "node test/test20220119.js"
   },
   "keywords": [
     "Telegram",

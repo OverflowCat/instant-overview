@@ -61,7 +61,8 @@ export async function publish_sr_content(
   path?: string,
   return_content: boolean = false,
   author_name?: string,
-  author_url?: string
+  author_url?: string,
+  test?: any
 ) {
   const dom = new JSDOM(content);
   const document = dom.window.document;
@@ -69,7 +70,7 @@ export async function publish_sr_content(
   const filtered_content = filterContent(body, document);
   const uploaded_content =
     needUploadMedia && needPublish
-      ? await uploadDomMedia(filtered_content, document)
+      ? await uploadDomMedia(filtered_content, document, test.imguploadlimit)
       : filtered_content;
 
   let lineFilted = lineFilter(domToNode(uploaded_content));

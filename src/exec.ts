@@ -24,6 +24,10 @@ interface PublishParameters {
   style?: {
     use_desc?: boolean;
   };
+  test?: {
+    debug?: true;
+    imguploadlimit?: number;
+  }
 }
 interface TelegraphCreateArticleResponse {
   ok: boolean;
@@ -78,7 +82,7 @@ export async function publish(
       undefined, // path not implemented
       false,
       author_name,
-      author_url
+      author_url, param?.test || undefined
     );
     return {
       status: "success",
