@@ -5,7 +5,7 @@ export async function uploadMedia(link: URL): Promise<URL> {
   try {
     result = (await uploadByUrl(link.toString())).path;
   } catch (e) {
-    console.warn("MEDIA UPLOADING ERR: " + link.toString());
+    console.warn("=!= MEDIA UPLOADING ERR: " + link.toString());
     return link; // Use the original link instead. It'll work well on telegra.ph the website.
   }
   if (!result.startsWith('/')) result = '/' + result;

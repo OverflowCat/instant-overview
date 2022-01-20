@@ -1,18 +1,50 @@
 const frontend = false;
+const from_markdown = true;
 
 export function filterContent(
   dom: HTMLElement,
   document: Document
 ): HTMLElement {
-  function changeTagName(ele: HTMLElement | Element, newTagName: string): void {
+  function changeTagName(ele: HTMLElement | Element, newTagName: string): HTMLElement {
     var parent = ele.parentNode;
     var newElement = document.createElement(newTagName);
     newElement.innerHTML = ele.innerHTML;
     parent?.insertBefore(newElement, ele);
     parent?.removeChild(ele);
+    return newElement;
   }
 
   dom.querySelectorAll("style").forEach((ele) => ele.remove());
+
+  if (from_markdown) {
+    /* <figure> was lost during the z-turn.
+    Since SimpRead uses https://github.com/showdownjs/showdown to convert it back,
+    we can assume all <img> are in a seperated <p>, and
+    if there is a figure caption attatched to the image,
+    it was after the <img>.
+    
+    ||EXAMPLE
+      <p><img src="….png" alt="" /></p>
+      <p><img src="….png" alt="">一览</p>
+    */
+    let images = dom.getElementsByTagName("img");
+    for (let x of images) {
+      if (x.nextSibling !== null /* && x.nextSibling === null */) {
+        // since there may be complex format in a figure caption
+        if (x.parentElement) {
+          let parent = x.parentElement
+          parent = changeTagName(parent, "figure");
+          // It is important to reassign the variable, for 
+          // changeTagName actually creates a new element
+          let children = parent.childNodes;
+          parent.innerHTML = "<figcaption>" + parent.innerHTML + "</figcaption>";
+          parent.insertBefore(x, parent.firstElementChild);
+          parent.firstElementChild?.nextSibling?.firstChild?.remove();
+          // TODO: Will there be <figure>s in a blockquote?
+        }
+      }
+    }
+  }
 
   // br
   dom

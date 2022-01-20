@@ -61,14 +61,6 @@ export function lineFilter(obj: graphNode): graphNode {
             if (child.trim() === "") return false;
           }
           return true;
-          
-          //const result1 =
-          //  typeof child === "string" &&
-          //  (/\n/.test(child.trim()) || // Contains linebreak
-          //    child.trim() === ""); // All whitespace chars
-          //const result2 = obj.tag === "code" || obj.tag === "pre" || !result1;
-          //console.log("!CHILD", child, "whitespace", result1);
-          //return result2;
         });
       obj.children = children;
       return obj;
