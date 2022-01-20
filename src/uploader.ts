@@ -6,6 +6,10 @@ import bent from "bent";
 const post = bent("POST", "json");
 const needPublish = true;
 const needUploadMedia = true;
+const defaultConfig: TestConfig = {
+  imguploadlimit: -1,
+  weixinpicproxy: false
+}
 
 const limitLength = (text: string): string => {
   if (text.length >= 85) return text.slice(0, 84) + "…";
@@ -25,7 +29,7 @@ export async function publish_sr_content(
   return_content: boolean = false,
   author_name?: string,
   author_url?: string,
-  test?: any
+  test?: TestConfig
 ) {
   const dom = new JSDOM(content);
   const document = dom.window.document;
@@ -33,7 +37,7 @@ export async function publish_sr_content(
   const filtered_content = filterContent(body, document);
   const uploaded_content =
     needUploadMedia && needPublish
-      ? await uploadDomMedia(filtered_content, document, test.imguploadlimit)
+      ? await uploadDomMedia(filtered_content, document, test || defaultConfig)
       : filtered_content;
 
   let lineFilted = lineFilter(domToNode(uploaded_content));
